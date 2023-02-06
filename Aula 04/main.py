@@ -4,6 +4,7 @@ import numpy
 import pandas
 import time
 import warnings
+import plotly.express as px
 
 pages = numpy.arange(1, 5, 50) # Agrupar os itens
 headers = {'Accept-Language':'pt-BR,pt;q=0.8'}
@@ -63,12 +64,23 @@ for page in pages:
         else:
             imdb_ratings.append(None)
 
-        if container.find('span', attrs={'name': 'nv'})['data-value'] is not None:
-            vote = container.find('span', attrs={'name': 'nv'})['data-value']
-            votes.append(vote)
-        else:
-            votes.append(None)
+        #bug ao receber um voto vazio.
+        #if container.find('span', attrs = {'name':'nv'})['data-value'] is not None:
+        #   vote = int(container.find('span', attrs = {'name':'nv'})['data-value'])
+        #    votes.append(vote)
+        #else:
+        #    votes.append(None)
 
-    
+data = pandas.DataFrame({'Filme':titles,
+'Ano':years,
+'Genero':genres,
+'Duração':runtimes,
+'imdb':imdb_ratings})
+#'Votos':votes
 
+#contagem de gêneros
+qtdFilmes = data['Filme'].value_counts()
+qtdGeneros = data['Genero'].value_counts()
 
+#Montar gráficos
+px.pie(names= qtdFilmes.index, values= qtdGeneros.values)
